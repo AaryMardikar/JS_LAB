@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const colors1 = ["red", "green"];
+const colors2 = ["blue", "yellow"];
+
+const palette = [...colors1, ...colors2];
+
+const [first, ...rest] = palette;
+const [lastColor] = rest.slice(-1);
+const middle = rest.slice(0, -1);
+
+const message = `Main colors: ${capitalize(first)} and ${capitalize(lastColor)}.` +
+  (middle.length ? ` Others in the palette: ${middle.map(capitalize).join(", ")}.` : "");
+
+console.log(message);
+
+function capitalize(str) {
+  return str[0].toUpperCase() + str.slice(1);
+}
+
+    </script>
+</body>
+</html>

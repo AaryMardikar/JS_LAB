@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+  <p id="step">Click Next to start</p>
+  <button onclick="showStep()">Next Step</button>
+  <button onclick="addStep()">Add</button>
+  <button onclick="deleteStep()">Delete</button>
+
+  <script>
+    let steps = ["Wash veggies", "Cut them", "Cook them", "Serve hot"];
+    let i = 0;
+
+    function showStep() {
+      if (i < steps.length) {
+        document.getElementById("step").textContent = steps[i++];
+      } else {
+        document.getElementById("step").textContent = "Recipe Completed";
+      }
+    }
+
+    function addStep() {
+      let newStep = prompt("");
+      steps.push(newStep);
+
+      let li = document.createElement("li");
+      li.textContent = newStep;
+      li.appendChild(li);
+    }   
+
+    function deleteStep() {
+      if (steps.length > 0) {
+        steps.pop();
+        li.removeChild(li.lastChild);
+      }
+    }
+  </script>
+</body>
+</html>

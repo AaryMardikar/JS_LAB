@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let a = prompt("Enter a number:");
+        a = parseInt(a);
+        let b = prompt("Enter another number:");
+        b = parseInt(b);
+        if (a % 2 === 0 && b % 2 === 0) {
+            alert("Both numbers are even.");
+        } else if (a % 2 !== 0 && b % 2 !== 0) {
+            alert("Both numbers are odd.");
+        } else {
+            alert("One number is even and the other is odd.");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Fair Grader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        @keyframes fadeInScale { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .animate-fadeInScale { animation: fadeInScale 0.5s ease-in-out forwards; }
+        .top-scorer-highlight { border: 2px solid #10b981; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4); transform: scale(1.02); transition: transform 0.3s ease; }
+        .message-box { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 1rem; background-color: #f87171; color: white; border-radius: 0.5rem; z-index: 1000; display: none; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <main class="flex-grow p-4 md:p-8">
+        <h1 class="text-4xl text-center font-bold mb-6">The Fair Grader</h1>
+        <div id="student-forms" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            <form id="form-1" class="bg-white p-6 rounded-xl shadow">
+                <input type="hidden" name="id" value="1">
+                <label class="block text-sm">Student Name:</label><input type="text" name="name" value="Ankit Sharma" class="w-full p-2 mb-2 border rounded" required>
+                <label class="block text-sm">Roll Number:</label><input type="number" name="roll" value="101" class="w-full p-2 mb-2 border rounded" required>
+                <label class="block text-sm">Subject 1 (Slider):</label><input type="range" name="sub1" min="0" max="100" value="75" class="w-full mb-2">
+                <label class="block text-sm">Subject 2 (Manual):</label><input type="number" name="sub2" min="0" max="100" value="85" class="w-full p-2 mb-2 border rounded" required>
+                <label class="block text-sm">Subject 3 (Dropdown):</label><select name="sub3" class="w-full p-2 mb-4 border rounded" required></select>
+                <button type="submit" class="w-full p-3 bg-indigo-600 text-white rounded">Submit</button>
+            </form>
+            <form id="form-2" class="bg-white p-6 rounded-xl shadow">
+                <input type="hidden" name="id" value="2">
+                <label class="block text-sm">Student Name:</label><input type="text" name="name" value="Priya Singh" class="w-full p-2 mb-2 border rounded" required>
+                <label class="block text-sm">Roll Number:</label><input type="number" name="roll" value="102" class="w-full p-2 mb-2 border rounded" required>
+                <label class="block text-sm">Subject 1 (Slider):</label><input type="range" name="sub1" min="0" max="100" value="92" class="w-full mb-2">
+                <label class="block text-sm">Subject 2 (Manual):</label><input type="number" name="sub2" min="0" max="100" value="95" class="w-full p-2 mb-2 border rounded" required>
+                <label class="block text-sm">Subject 3 (Dropdown):</label><select name="sub3" class="w-full p-2 mb-4 border rounded" required></select>
+                <button type="submit" class="w-full p-3 bg-indigo-600 text-white rounded">Submit</button>
+            </form>
+            <form id="form-3" class="bg-white p-6 rounded-xl shadow">
+                <input type="hidden" name="id" value="3">
+                <label class="block text-sm">Student Name:</label><input type="text" name="name" value="Rahul Gupta" class="w-full p-2 mb-2 border rounded" required>
+                <label class="block text-sm">Roll Number:</label><input type="number" name="roll" value="103" class="w-full p-2 mb-2 border rounded" required>
+                <label class="block text-sm">Subject 1 (Slider):</label><input type="range" name="sub1" min="0" max="100" value="45" class="w-full mb-2">
+                <label class="block text-sm">Subject 2 (Manual):</label><input type="number" name="sub2" min="0" max="100" value="60" class="w-full p-2 mb-2 border rounded" required>
+                <label class="block text-sm">Subject 3 (Dropdown):</label><select name="sub3" class="w-full p-2 mb-4 border rounded" required></select>
+                <button type="submit" class="w-full p-3 bg-indigo-600 text-white rounded">Submit</button>
+            </form>
+        </div>
+        <div id="results" class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+    </main>
+    <footer class="bg-gray-800 text-white text-center p-4"><p>Developed by: Your Name Here</p><p id="completion-time"></p></footer>
+    <div id="message-box" class="message-box"></div>
+    <script>
+        const subjects = ['Physics', 'Chemistry', 'Biology'];
+        const students = {};
+        const forms = document.querySelectorAll('form[id^="form-"]');
+        const resultsContainer = document.getElementById('results');
+        const showMessage = msg => { const mb = document.getElementById('message-box'); mb.textContent = msg; mb.style.display = 'block'; setTimeout(() => mb.style.display = 'none', 3000); };
+        const assignGrade = avg => { if (avg >= 90) return 'A'; if (avg >= 75) return 'B'; if (avg >= 50) return 'C'; return 'F'; };
+        const assignRemark = avg => { switch (true) { case (avg >= 90): return 'Excellent'; case (avg >= 75): return 'Good'; case (avg >= 50): return 'Needs Improvement'; default: return 'Fail'; } };
+        const displayResults = () => {
+            resultsContainer.innerHTML = '';
+            const studentArray = Object.values(students);
+            if (studentArray.length === 0) return;
+            const topScorer = studentArray.reduce((prev, curr) => (prev.average > curr.average) ? prev : curr, { average: -1 });
+            studentArray.forEach(s => {
+                const isTop = topScorer && (s.id === topScorer.id);
+                const card = document.createElement('div');
+                card.classList.add('bg-white', 'p-6', 'rounded-xl', 'shadow', 'animate-fadeInScale', isTop ? 'top-scorer-highlight' : '');
+                card.innerHTML = <div class="flex items-center space-x-4 mb-4"><svg class="h-10 w-10 text-indigo-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg><div class="min-w-0 flex-1"><p class="text-lg font-semibold">${s.name}</p><p class="text-sm">Roll No: ${s.roll}</p></div></div><ul class="space-y-2"><li><strong>Avg:</strong> <span class="font-bold">${s.average.toFixed(2)}</span></li><li><strong>Grade:</strong> <span class="font-bold">${s.grade}</span></li><li><strong>Remark:</strong> <span>${s.remark}</span></li></ul>;
+                resultsContainer.appendChild(card);
+            });
+        };
+        forms.forEach(form => {
+            const subject3Dropdown = form.querySelector('select[name="sub3"]');
+            subjects.forEach(subject => {
+                const opt = document.createElement('option');
+                opt.value = Math.floor(Math.random() * 101);
+                opt.textContent = ${subject} (${opt.value});
+                subject3Dropdown.appendChild(opt);
+            });
+            form.querySelector('input[type="range"]').addEventListener('input', e => e.target.nextElementSibling.textContent = e.target.value);
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                const s1 = parseInt(fd.get('sub1')), s2 = parseInt(fd.get('sub2')), s3 = parseInt(form.querySelector('select[name="sub3"]').value);
+                if ([s1, s2, s3].some(s => s < 0 || s > 100)) { showMessage('Error: Marks must be 0-100.'); return; }
+                const avg = (s1 + s2 + s3) / 3;
+                students[fd.get('id')] = { id: fd.get('id'), name: fd.get('name'), roll: fd.get('roll'), average: avg, grade: assignGrade(avg), remark: assignRemark(avg) };
+                displayResults();
+            });
+            form.dispatchEvent(new Event('submit'));
+        });
+        document.getElementById('completion-time').textContent = Completed on: ${new Date().toLocaleString()};
+    </script>
+</body>
+</html>

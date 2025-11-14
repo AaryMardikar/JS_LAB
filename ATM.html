@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let transactionType = prompt("Enter transaction type (withdraw/deposit):");
+        let amount = parseFloat(prompt("Enter the amount:"));
+        let balance = 1000; 
+        if (transactionType === 'withdraw') {
+            if (amount > balance) {
+                alert("Insufficient funds.");
+            } else {
+                balance -= amount;
+                alert(`Withdrawal successful. New balance: $${balance}`);
+            }
+        } else if (transactionType === 'deposit') {
+            balance += amount;
+            alert(`Deposit successful. New balance: $${balance}`);
+        } else {
+            alert("Invalid transaction type. Please enter 'withdraw' or 'deposit'.");
+        }
+    </script>
+</body>
+</html>

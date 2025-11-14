@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function secretKeeper() {
+            const secretMessage = "HERO AALOM";
+            const password = "mypassword";
+
+            return function(givenPassword) {
+                if (givenPassword === password) {
+                    return secretMessage;
+                } else {
+                    return "Access Denied!";
+                }
+            };
+        }
+        const getSecret = secretKeeper();
+        document.write(getSecret("wrongpass") + "<br>"); 
+        document.write(getSecret("mypassword"));        
+    </script>
+</body>
+</html>

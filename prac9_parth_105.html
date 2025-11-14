@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Personal Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Default Theme (Light) */
+        .light {
+            background: #ffffff;
+            color: #333333;
+        }
+
+        /* Dark Theme */
+        .dark {
+            background: #121212;
+            color: #ffffff;
+        }
+
+        button, select, textarea, input {
+            margin: 5px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        textarea {
+            width: 80%;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="welcometext">Welcome!</h1>
+
+    <input type="text" id="userName" placeholder="Enter your name">
+    <button id="saveUser">Save Name</button>
+    <button id="clearUser">Clear Name</button>
+
+    <br><br>
+
+    <label for="themeBtn">Switch Theme: </label>
+    <button id="themeBtn">Switch Theme</button>
+
+    <br><br>
+
+    <label for="fontChooser">Font Size: </label>
+    <select id="fontChooser">
+        <option value="14px">Small</option>
+        <option value="16px" selected>Medium</option>
+        <option value="20px">Large</option>
+    </select>
+
+    <br><br>
+
+    <button id="resetBtn">Reset Preferences</button>
+
+    <p id="tabCounter"></p>
+
+    <hr>
+
+    <h3>Feedback</h3>
+    <textarea id="feedback" rows="4" cols="40" placeholder="Your feedback..."></textarea>
+
+    <script>
+        // === Theme Chooser ===
+        const themeBtn = document.getElementById("themeBtn");
+        let theme = localStorage.getItem("theme") || "light";
+
+        // Apply saved theme on load
+        document.body.className = theme;
+
+        themeBtn.onclick = () => {
+            theme = (theme === "light") ? "dark" : "light";
+            document.body.className = theme;
+            localStorage.setItem("theme", theme);
+        };
+
+        // === Font Size ===
+        const fSelect = document.getElementById("fontChooser");
+        let fontPref = localStorage.getItem("fontSizePref");
+
+        if (fontPref) {
+            document.body.style.fontSize = fontPref;
+            fSelect.value = fontPref;
+        }
+
+        fSelect.onchange = () => {
+            const f = fSelect.value;
+            document.body.style.fontSize = f;
+            localStorage.setItem("fontSizePref", f);
+        };
+
+        // === Username ===
+        const saveUserBtn = document.getElementById("saveUser");
+        const clearUserBtn = document.getElementById("clearUser");
+        const userNameInput = document.getElementById("userName");
+        const welcomeText = document.getElementById("welcometext");
+
+        let savedUser = localStorage.getItem("username");
+
+        if (savedUser) {
+            welcomeText.innerText = "Welcome, " + savedUser + "!";
+        }
+
+        saveUserBtn.onclick = () => {
+            const user = userNameInput.value.trim();
+            if (user) {
+                welcomeText.innerText = "Welcome, " + user + "!";
+                localStorage.setItem("username", user);
+                userNameInput.value = "";
+            }
+        };
+
+        clearUserBtn.onclick = () => {
+            userNameInput.value = "";
+            welcomeText.innerText = "Welcome!";
+            localStorage.removeItem("username");
+        };
+
+        // === Session Counter (using sessionStorage) ===
+        const tabCounter = document.getElementById("tabCounter");
+        let count = parseInt(sessionStorage.getItem("visits")) || 0;
+
+        count++;
+        sessionStorage.setItem("visits", count);
+        tabCounter.innerText = `This tab has been refreshed ${count} times.`;
+
+        // === Feedback (using sessionStorage) ===
+        const fbTextarea = document.getElementById("feedback");
+        let savedFb = sessionStorage.getItem("feedback");
+
+        if (savedFb) {
+            fbTextarea.value = savedFb;
+        }
+
+        fbTextarea.oninput = () => {
+            sessionStorage.setItem("feedback", fbTextarea.value);
+        };
+
+        // === Reset Preferences ===
+        const resetBtn = document.getElementById("resetBtn");
+        resetBtn.onclick = () => {
+            localStorage.clear();
+            sessionStorage.clear();
+            location.reload();
+        };
+    </script>
+</body>
+</html>

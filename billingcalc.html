@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form>
+        <input type="text" name="Itemname" placeholder="Name of the item" >
+        <input type="number" name="Itemquantity" placeholder="Quantity purchased" >
+        <input type="number" name="Itemprice" placeholder="Price of the item" >
+    </form>
+        <button id="calculate">Calculate</button>
+        <div id="result"></div>
+        <script>
+            document.getElementById('calculate').addEventListener('click', function() {
+                const form = document.querySelector('form');
+                const itemName = form.Itemname.value;
+                const itemQuantity = parseFloat(form.Itemquantity.value);
+                const itemPrice = parseFloat(form.Itemprice.value);
+                
+                if (itemName && itemQuantity > 0 && itemPrice > 0) {
+                    const totalCost = itemQuantity * itemPrice;
+                    document.getElementById('result').textContent = `Total cost for ${itemName} is $${totalCost.toFixed(2)}`;
+                } else {
+                    document.getElementById('result').textContent = 'Please fill out all fields correctly.';
+                }
+            });
+        </script>
+</body>
+</html>

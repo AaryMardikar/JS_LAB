@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+    <input type="text" id="myInput" placeholder="Start typing...">
+    
+    <div id="output">Your text will appear here...</div>
+
+    <script>
+        const inputBox = document.getElementById("myInput");
+        const outputDiv = document.getElementById("output");
+
+        inputBox.addEventListener("input", function () {
+            let text = inputBox.value;
+            outputDiv.textContent = text || "Your text will appear here...";
+        });
+    </script>
+
+</body>*
+</html>

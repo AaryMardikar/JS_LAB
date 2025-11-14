@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    let a = prompt("Please enter your name:")
+    const student  = {roll_no: 91 , Subjects: { Math : 85 , Science: 90, English: 78, History: 88, Art: 92}};
+    const{roll_no, Subjects} = student;
+    const {Math, Science, English, History, Art} = Subjects; 
+    let total = (student.Subjects.Math + student.Subjects.Science + student.Subjects.English + student.Subjects.History + student.Subjects.Art)/5;
+   document.write("<br>Subjects and their scores:<br>"); 
+    document.write(`Math: ${Math}, Science: ${Science}, English: ${English}, History: ${History}, Art: ${Art}<br>`);
+    document.write(`Hello ${a}, your roll number is ${roll_no} and your average score is ${total}.`);
+  </script>
+</body>
+</html>

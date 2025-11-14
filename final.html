@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Document</title>
+</head>
+<body>
+  <h2>Smart Job Application Analyzer</h2>
+
+  <p>Paste your raw job application text:</p>
+  <textarea id="appInput" rows="15" cols="80"></textarea><br><br>
+
+  <button onclick="analyze()">Analyze</button>
+
+  <h3>Output:</h3>
+  <pre id="output"></pre>
+
+<script>
+function formatName(name){
+  return name.trim().split(/\s+/).map(word=>{
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  }).join(" ");
+}
+
+function extractEmails(text){
+  let emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g;
+  let emails = text.match(emailRegex) || [];
+  if(emails.length > 0){
+    return {
+      primary: emails[0].toLowerCase(),
+      alternate: emails.slice(1).map(e=>e.toLowerCase())
+    };
+  }
+  return {primary:"", alternate:[]};
+}
+
+function extractPhone(text){
+  let phoneRegex = /\+\d{2,3}-\d{10}/;
+  let match = text.match(phoneRegex);
+  if(match){
+    let number = match[0];
+    let afterDash = number.split("-")[1];
+    if(/^[6-9]/.test(afterDash)){
+      return number;
+    }
+  }
+  return "Invalid phone number";
+}
+
+function extractSkills(text){
+  let skillLine = text.match(/Skills:(.*)/i);
+  if(skillLine){
+    return skillLine[1]
+      .split(",")
+      .map(s=>s.trim())
+      .filter(s=>s.length>0);
+  }
+  return [];
+}
+
+function extractHashtags(text){
+  let tags = text.match(/#[A-Za-z0-9]+/g);
+  return tags || [];
+}
+
+function extractSalary(text){
+  let salMatch = text.match(/Salary.*?([\d,]+)/i);
+  if(salMatch){
+    let num = salMatch[1].replace(/,/g,"");
+    return parseInt(num);
+  }
+  return 0;
+}
+
+function countWords(text){
+  let words = text.trim().split(/\s+/);
+  return words.filter(w=>w.length>0).length;
+}
+
+function countVowels(text){
+  let vowels = text.match(/[aeiouAEIOU]/g);
+  return vowels ? vowels.length : 0;
+}
+
+function analyze(){
+  let text = document.getElementById("appInput").value;
+
+  let nameMatch = text.match(/Applicant:\s*(.*)/i);
+  let applicant = nameMatch ? formatName(nameMatch[1]) : "";
+
+  let emails = extractEmails(text);
+  let phone = extractPhone(text);
+  let skills = extractSkills(text);
+  let hashtags = extractHashtags(text);
+  let salary = extractSalary(text);
+  let wordCount = countWords(text);
+  let vowelCount = countVowels(text);
+
+  let result = {
+    applicant: applicant,
+    primaryEmail: emails.primary,
+    altEmails: emails.alternate,
+    phone: phone,
+    skills: skills,
+    hashtags: hashtags,
+    salary: salary,
+    wordCount: wordCount,
+    vowelCount: vowelCount
+  };
+
+  document.getElementById("output").innerText = JSON.stringify(result, null, 2);
+}
+</script>
+</body>
+</html>
